@@ -55,22 +55,25 @@ namespace CYQ.Data.SQL
                 case DataBaseType.DaMeng:
                 case DataBaseType.KingBaseES:
                     StringBuilder sb = new StringBuilder();
-                    foreach (MCellStruct mcs in columns)
+                    if (dalType != DataBaseType.MySql)//mysql 的 字段注释在表结构里
                     {
-                        if (!string.IsNullOrEmpty(mcs.Description))
+                        foreach (MCellStruct mcs in columns)
                         {
-                            if (dalType == DataBaseType.MsSql)
+                            if (!string.IsNullOrEmpty(mcs.Description))
                             {
-                                sb.AppendFormat("exec sp_addextendedproperty N'MS_Description', N'{0}', N'user', N'dbo', N'table', N'{1}', N'column', N'{2}';\r\n", mcs.Description, tableName, mcs.ColumnName);
-                            }
-                            //else if (dalType == DataBaseType.Oracle || dalType == DataBaseType.DB2 || dalType == DataBaseType.FireBird || dalType == DataBaseType.DaMeng)
-                            //{
-                            //    sb.AppendFormat("comment on column {0}.{1}  is '{2}';\r\n", tableName.ToUpper(), mcs.ColumnName.ToUpper(), mcs.Description.Replace("'", "''"));
-                            //}
-                            else// if (dalType == DataBaseType.PostgreSQL)
-                            {
-                                sb.AppendFormat("comment on column {0}.{1}  is '{2}';\r\n",
-                                   SqlFormat.Keyword(tableName, dalType), SqlFormat.Keyword(mcs.ColumnName, dalType), mcs.Description.Replace("'", "''"));
+                                if (dalType == DataBaseType.MsSql)
+                                {
+                                    sb.AppendFormat("exec sp_addextendedproperty N'MS_Description', N'{0}', N'user', N'dbo', N'table', N'{1}', N'column', N'{2}';\r\n", mcs.Description, tableName, mcs.ColumnName);
+                                }
+                                //else if (dalType == DataBaseType.Oracle || dalType == DataBaseType.DB2 || dalType == DataBaseType.FireBird || dalType == DataBaseType.DaMeng)
+                                //{
+                                //    sb.AppendFormat("comment on column {0}.{1}  is '{2}';\r\n", tableName.ToUpper(), mcs.ColumnName.ToUpper(), mcs.Description.Replace("'", "''"));
+                                //}
+                                else// if (dalType == DataBaseType.PostgreSQL)
+                                {
+                                    sb.AppendFormat("comment on column {0}.{1}  is '{2}';\r\n",
+                                       SqlFormat.Keyword(tableName, dalType), SqlFormat.Keyword(mcs.ColumnName, dalType), mcs.Description.Replace("'", "''"));
+                                }
                             }
                         }
                     }

@@ -138,10 +138,11 @@ namespace CYQ.Data.Orm
                 //conn 为 null，则自动取值，为空则人为传空，不处理。
                 if (_Action == null && _conn != "")
                 {
-                    if (_conn == null && string.IsNullOrEmpty(AppConfig.DB.DefaultConn))
-                    {
-                        return null;
-                    }
+                    //这个影响 Aries Gemini 工作流实体【实体都是自动取值模式，而且未配置Conn】，所以注释掉。
+                    //if (_conn == null && string.IsNullOrEmpty(AppConfig.DB.DefaultConn))
+                    //{
+                    //    return null;
+                    //}
                     SetDelayInit(_entityInstance, _tableName, _conn);//延迟加载
                     if (_Action != null && _Action.dalHelper != null)
                     {

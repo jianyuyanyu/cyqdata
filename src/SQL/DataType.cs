@@ -582,7 +582,13 @@ namespace CYQ.Data.SQL
                         case DataBaseType.MySql:
                             if (sqlType == SqlDbType.TinyInt)
                             {
-                                return "tinyint(" + (maxSize > 0 ? maxSize : 4) + ") UNSIGNED";
+                                string text = "tinyint(" + (maxSize > 0 ? maxSize : 4) + ")";
+                                int dv = -1;
+                                if (ms.DefaultValue != null && int.TryParse(Convert.ToString(ms.DefaultValue), out dv) && dv > -1)
+                                {
+                                    return text + " UNSIGNED";
+                                }
+                                return text;
                             }
                             break;
                         case DataBaseType.PostgreSQL:
@@ -789,7 +795,7 @@ namespace CYQ.Data.SQL
                                 return "sql_variant";
                             }
                             if (maxSize > 0 && maxSize <= 16) { maxSize = 255; }//兼容MySql，16的字节存了36的数据
-                            if (maxSize > 8000 && key == "binary") { key = "varbinary";maxSize = -1; }
+                            if (maxSize > 8000 && key == "binary") { key = "varbinary"; maxSize = -1; }
                             return key + "(" + (maxSize < 0 ? "max" : maxSize.ToString()) + ")";
                         case DataBaseType.PostgreSQL:
                             return "bytea";
@@ -841,10 +847,10 @@ namespace CYQ.Data.SQL
                                 varchar 1-8000
                                  * 
                                  */
-                                if (t == "varchar" && dalFrom == DataBaseType.MySql) 
+                                if (t == "varchar" && dalFrom == DataBaseType.MySql)
                                 {
                                     if (maxSize > 4000) { return "nvarchar(max)"; }
-                                    t = "nvarchar"; 
+                                    t = "nvarchar";
                                 }
                                 return t + "(" + maxSize + ")";
                             }
